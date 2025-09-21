@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -69,14 +68,47 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	
+    pub fn merge(list_a:LinkedList<T>, list_b:LinkedList<T>) -> Self
+    where
+        T: Clone + PartialOrd,
 	{
-		//TODO
-		Self {
+        if list_a.length == 0 {
+            return list_b;
+        }
+        if list_b.length == 0 {
+            return list_a;
+        }
+        let mut list_a = list_a;  // 在函数体里重新绑定成可变
+        let mut list_b = list_b;  // 同理
+        let mut res = Self {
             length: 0,
             start: None,
             end: None,
+        };
+        let mut at_a = 0;
+        let mut at_b = 0;
+        while at_a < list_a.length && at_b < list_b.length {
+            let va = list_a.get(at_a as i32).unwrap();
+            let vb = list_b.get(at_b as i32).unwrap();
+            if va < vb {
+                res.add(va.clone());
+                at_a += 1;
+            } else {
+                res.add(vb.clone());
+                at_b += 1;
+            }
         }
+
+        while at_a < list_a.length {
+            res.add(list_a.get(at_a as i32).unwrap().clone());
+            at_a += 1;
+        }
+        while at_b < list_b.length {
+            res.add(list_b.get(at_b as i32).unwrap().clone());
+            at_b += 1;
+        }
+        res
 	}
 }
 
